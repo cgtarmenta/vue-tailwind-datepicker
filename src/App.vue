@@ -19,6 +19,9 @@ function onClickSomething(e: Dayjs) {
 function onSelectSomething(e: Dayjs) {
   console.log(e)
 }
+function dDate(date: Date) {
+  return date < new Date()
+}
 </script>
 
 <template>
@@ -40,6 +43,10 @@ function onSelectSomething(e: Dayjs) {
         @click-right-next="onClickSomething($event)" />
 
       <VueTailwindDatePicker v-model="dateValue.startDate" as-single :i18n="currentLocale" />
+      <div>
+        <span>Disable dates in the past </span>
+        <VueTailwindDatePicker v-model="dateValue" as-single :i18n="currentLocale" :disable-date="dDate" no-input />
+      </div>
     </div>
   </div>
 </template>
