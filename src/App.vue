@@ -4,6 +4,16 @@ import { ref } from 'vue'
 import type { Dayjs } from 'dayjs'
 import VueTailwindDatePicker from './VueTailwindDatePicker.vue'
 
+const availableDates = ref(['20241115', '20241116', '20241117'])
+function parseAvailableDates(available: string[]) {
+  return available
+}
+
+function complexDisableDate(date: Date) {
+  const formattedDate = date?.toISOString()?.slice(0, 10)?.replace(/-/g, ''); // 20241115
+  // returns a boolean after checking if date is included in an array of dates in YYYYMMDD format
+  return !parseAvailableDates(availableDates.value)?.includes(formattedDate)
+}
 const dateValue = ref({
   startDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
   endDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -46,6 +56,10 @@ function dDate(date: Date) {
       <div>
         <span>Disable dates in the past </span>
         <VueTailwindDatePicker v-model="dateValue" as-single :i18n="currentLocale" :disable-date="dDate" no-input />
+      </div>
+      <div>
+        <span>More complex disable dates </span>
+        <VueTailwindDatePicker v-model="dateValue" as-single :i18n="currentLocale" :disable-date="complexDisableDate" no-input />
       </div>
     </div>
   </div>

@@ -49,7 +49,7 @@ import {
   setToYesterdayKey,
 } from './keys'
 
-interface Props {
+export interface Props {
   noInput?: boolean
   overlay?: boolean
   asSingle?: boolean
@@ -466,10 +466,12 @@ function asRange() {
 }
 
 function inRangeDate(date: Dayjs) {
-  if (props.disableInRange || (props.disableDate && typeof props.disableDate === 'function'))
+  if (props.disableInRange || (props.disableDate && typeof props.disableDate === 'function')) {
     return false
-  if (pickerValue.value === '')
+  }
+  if (pickerValue.value === '') {
     return false
+  }
   let s, e
   if (Array.isArray(props.modelValue)) {
     const [start, end] = props.modelValue
@@ -522,7 +524,7 @@ function clearPicker() {
   applyValue.value = []
   VtdInputRef.value && VtdInputRef.value.focus()
 }
-defineExpose({ clearPicker })
+defineExpose({ clearPicker, close })
 
 /**
  * keyUp event
