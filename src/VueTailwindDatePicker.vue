@@ -1503,7 +1503,7 @@ provide(setToCustomShortcutKey, setToCustomShortcut)
         class="relative z-50"
       >
         <div style="display: none">
-          {{ setPanelState(close, open) }}
+          {{ setPanelState(close) }}
         </div>
         <div class="absolute z-50 top-full sm:mt-2.5" :class="getAbsoluteParentClass(open)">
           <div

@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import {computed, ref} from 'vue'
+import { ref } from 'vue'
 import type { Dayjs } from 'dayjs'
 import VueTailwindDatePicker from './VueTailwindDatePicker.vue'
 
 const controllableDatePicker = ref(null)
-const isControllableDatePickerOpen = computed(()=>{
-  return controllableDatePicker.value?.isOpen
-})
+
 const availableDates = ref(['20241115', '20241116', '20241117'])
 function parseAvailableDates(available: string[]) {
   return available

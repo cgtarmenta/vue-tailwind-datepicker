@@ -1,0 +1,125 @@
+name: Manual Prerelease Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Prerelease version (e.g., 1.7.3-beta.1)'
+        required: true
+        default: '1.7.3-beta.1'
+      prerelease_name:
+        description: 'Prerelease name'
+        required: true
+        default: 'Extended functionality preview'
+
+jobs:
+  build-prerelease:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library
+        run: npm run build
+
+      - name: Create temporary package.json for release
+        run: |
+          # Crear un package.json temporal para el release
+          cat > temp-package.json << 'EOF'
+          {
+            "name": "vue-tailwind-datepicker-extended",
+            "version": "${{ github.event.inputs.version }}",
+            "description": "Extended version of vue-tailwind-datepicker with additional functionality",
+            "main": "./vue-tailwind-datepicker.umd.cjs",
+            "module": "./vue-tailwind-datepicker.js",
+            "types": "./types.d.ts",
+            "exports": {
+              ".": {
+                "types": "./types.d.ts",
+                "import": "./vue-tailwind-datepicker.js",
+                "require": "./vue-tailwind-datepicker.umd.cjs"
+              }
+            },
+            "files": [
+              "vue-tailwind-datepicker.js",
+              "vue-tailwind-datepicker.umd.cjs",
+              "types.d.ts"
+            ],
+            "peerDependencies": {
+              "dayjs": "^1.11.10",
+              "tailwindcss": "^3.4.15",
+              "vue": "^3.5.13"
+            },
+            "dependencies": {
+              "@vueuse/core": "^10.5.0",
+              "vite-plugin-css-injected-by-js": "^3.3.0"
+            }
+          }
+          EOF
+
+      - name: Create release package
+        run: |
+          # Crear directorio para el release
+          mkdir -p release-package
+          
+          # Copiar archivos compilados
+          cp dist/* release-package/
+          
+          # Copiar package.json temporal
+          cp temp-package.json release-package/package.json
+          
+          # Copiar README si existe
+          if [ -f README.md ]; then
+            cp README.md release-package/
+          fi
+          
+          # Crear tarball
+          cd release-package
+          tar -czf ../vue-tailwind-datepicker-extended-${{ github.event.inputs.version }}.tar.gz .
+          cd ..
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          release_name: ${{ github.event.inputs.prerelease_name }}
+          body: |
+            ## 🚀 Extended functionality prerelease
+            
+            This is a prerelease with extended functionality for vue-tailwind-datepicker.
+            
+            ### Installation
+            ```bash
+            npm install https://github.com/${{ github.repository }}/releases/download/v${{ github.event.inputs.version }}/vue-tailwind-datepicker-extended-${{ github.event.inputs.version }}.tar.gz
+            ```
+            
+            ### Changes
+            - Added exposed close function
+            - Enhanced functionality for external control
+            
+            **Note:** This is a prerelease version for testing purposes.
+          draft: false
+          prerelease: true
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./vue-tailwind-datepicker-extended-${{ github.event.inputs.version }}.tar.gz
+          asset_name: vue-tailwind-datepicker-extended-${{ github.event.inputs.version }}.tar.gz
+          asset_content_type: application/gzip
