@@ -26,15 +26,14 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies with legacy peer deps
+        run: npm ci --legacy-peer-deps
 
       - name: Build library
         run: npm run build
 
       - name: Create temporary package.json for release
         run: |
-          # Crear un package.json temporal para el release
           cat > temp-package.json << 'EOF'
           {
             "name": "vue-tailwind-datepicker-extended",
@@ -69,21 +68,12 @@ jobs:
 
       - name: Create release package
         run: |
-          # Crear directorio para el release
           mkdir -p release-package
-          
-          # Copiar archivos compilados
           cp dist/* release-package/
-          
-          # Copiar package.json temporal
           cp temp-package.json release-package/package.json
-          
-          # Copiar README si existe
           if [ -f README.md ]; then
             cp README.md release-package/
           fi
-          
-          # Crear tarball
           cd release-package
           tar -czf ../vue-tailwind-datepicker-extended-${{ github.event.inputs.version }}.tar.gz .
           cd ..
