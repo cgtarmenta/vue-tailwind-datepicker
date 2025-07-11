@@ -44,6 +44,7 @@
     "build": "vite build",
     "preview": "vite preview --port 4173",
     "lint": "eslint",
+    "postinstall": "npm run build",
     "lint:fix": "eslint --fix",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
