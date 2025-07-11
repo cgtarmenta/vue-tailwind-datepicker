@@ -10,7 +10,7 @@ function parseAvailableDates(available: string[]) {
 }
 
 function complexDisableDate(date: Date) {
-  const formattedDate = date?.toISOString()?.slice(0, 10)?.replace(/-/g, ''); // 20241115
+  const formattedDate = date?.toISOString()?.slice(0, 10)?.replace(/-/g, '') // 20241115
   // returns a boolean after checking if date is included in an array of dates in YYYYMMDD format
   return !parseAvailableDates(availableDates.value)?.includes(formattedDate)
 }
@@ -46,11 +46,13 @@ function dDate(date: Date) {
       </select>
     </label>
     <div class="grid grid-rows-2 gap-4">
-      <VueTailwindDatePicker v-model="dateValue" :i18n="currentLocale" @select-month="onSelectSomething($event)"
+      <VueTailwindDatePicker
+        v-model="dateValue" :i18n="currentLocale" @select-month="onSelectSomething($event)"
         @select-year="onSelectSomething($event)" @select-right-month="onSelectSomething($event)"
         @select-right-year="onSelectSomething($event)" @click-prev="onClickSomething($event)"
         @click-next="onClickSomething($event)" @click-right-prev="onClickSomething($event)"
-        @click-right-next="onClickSomething($event)" />
+        @click-right-next="onClickSomething($event)"
+      />
 
       <VueTailwindDatePicker v-model="dateValue.startDate" as-single :i18n="currentLocale" />
       <div>
