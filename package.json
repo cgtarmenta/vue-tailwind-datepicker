@@ -27,9 +27,9 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/types.d.ts",
       "import": "./dist/vue-tailwind-datepicker.js",
-      "require": "./dist/vue-tailwind-datepicker.umd.cjs",
-      "types": "./dist/types.d.ts"
+      "require": "./dist/vue-tailwind-datepicker.umd.cjs"
     }
   },
   "main": "./dist/vue-tailwind-datepicker.umd.cjs",
@@ -193,7 +193,7 @@
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "dayjs": "^1.11.10",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.25.6",
     "eslint": "^8.51.0",
     "fs-extra": "^11.1.1",
     "husky": "^8.0.3",
@@ -202,9 +202,9 @@
     "postcss-preset-env": "^9.2.0",
     "semantic-release": "^22.0.5",
     "tailwindcss": "^3.4.15",
-    "vite": "^5.4.11",
+    "vite": "^7.0.4",
     "vite-plugin-dts": "4.3.0",
-    "vitepress": "^1.5.0",
+    "vitepress": "^1.6.3",
     "vue": "^3.5.13",
     "vue-tsc": "^2.1.10"
   },
