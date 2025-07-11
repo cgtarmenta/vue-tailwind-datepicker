@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { ref } from 'vue'
+import {computed, ref} from 'vue'
 import type { Dayjs } from 'dayjs'
 import VueTailwindDatePicker from './VueTailwindDatePicker.vue'
 
+const controllableDatePicker = ref(null)
+const isControllableDatePickerOpen = computed(()=>{
+  return controllableDatePicker.value?.isOpen
+})
 const availableDates = ref(['20241115', '20241116', '20241117'])
 function parseAvailableDates(available: string[]) {
   return available
@@ -53,15 +57,25 @@ function dDate(date: Date) {
         @click-next="onClickSomething($event)" @click-right-prev="onClickSomething($event)"
         @click-right-next="onClickSomething($event)"
       />
-
       <VueTailwindDatePicker v-model="dateValue.startDate" as-single :i18n="currentLocale" />
-      <div>
+      <div class="flex flex-col gap-4">
         <span>Disable dates in the past </span>
         <VueTailwindDatePicker v-model="dateValue" as-single :i18n="currentLocale" :disable-date="dDate" no-input />
       </div>
-      <div>
+      <div class="flex flex-col gap-4">
         <span>More complex disable dates </span>
         <VueTailwindDatePicker v-model="dateValue" as-single :i18n="currentLocale" :disable-date="complexDisableDate" no-input />
+      </div>
+      <div class="flex flex-col gap-4">
+        <span>Close programmatically </span>
+        <VueTailwindDatePicker
+          ref="controllableDatePicker"
+          v-model="dateValue"
+          :auto-apply="false"
+          :i18n="currentLocale"
+          :disable-date="dDate"
+          :disable-future-date="true"
+        />
       </div>
     </div>
   </div>

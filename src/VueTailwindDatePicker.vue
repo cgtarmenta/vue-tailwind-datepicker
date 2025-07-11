@@ -160,6 +160,8 @@ dayjs.extend(weekOfYear)
 
 const VtdRef = ref(null)
 const VtdInputRef = ref<HTMLInputElement | null>(null)
+const popoverPanelRef = ref<InstanceType<typeof PopoverPanel> | null>(null)
+const panelCloseFunction = ref<((ref?: Ref | HTMLElement) => void) | null>(null)
 const placement = ref<boolean | null>(null)
 const givenPlaceholder = ref('')
 const selection = ref<Dayjs | null>(null)
@@ -524,7 +526,19 @@ function clearPicker() {
   applyValue.value = []
   VtdInputRef.value && VtdInputRef.value.focus()
 }
-defineExpose({ clearPicker })
+
+function setPanelState(close: (ref?: Ref | HTMLElement) => void) {
+  panelCloseFunction.value = close
+}
+
+function closePopover(ref?: Ref | HTMLElement) {
+  if (panelCloseFunction.value)
+    panelCloseFunction.value(ref)
+}
+defineExpose({
+  clearPicker,
+  closePopover,
+})
 
 /**
  * keyUp event
@@ -1484,9 +1498,13 @@ provide(setToCustomShortcutKey, setToCustomShortcut)
       leave-to-class="opacity-0 translate-y-3"
     >
       <PopoverPanel
-        v-if="!props.disabled" v-slot="{ close }: { close: (ref?: Ref | HTMLElement) => void }" as="div"
+        v-if="!props.disabled"
+        ref="popoverPanelRef" v-slot="{ close }: { close: (ref?: Ref | HTMLElement) => void }" as="div"
         class="relative z-50"
       >
+        <div style="display: none">
+          {{ setPanelState(close, open) }}
+        </div>
         <div class="absolute z-50 top-full sm:mt-2.5" :class="getAbsoluteParentClass(open)">
           <div
             ref="VtdRef"
